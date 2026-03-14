@@ -1,4 +1,3 @@
-// src/index.js
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
@@ -11,6 +10,9 @@ import bonusRouter from './routes/bonus.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Важно для Railway/Heroku — доверяем прокси
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.use(globalLimiter);
@@ -34,7 +36,6 @@ app.use(express.json({ limit: '10kb' }));
 
 app.get('/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 
-// Все API-роуты требуют авторизацию
 app.use('/api', requireAuth);
 app.use('/api/user',  userRouter);
 app.use('/api/bonus', bonusRouter);
@@ -45,11 +46,10 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Инициализируем БД до старта сервера
 getDb().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Backend: http://localhost:${PORT}`);
-    console.log(`   BOT_TOKEN: ${process.env.BOT_TOKEN ? '✅ задан' : '❌ НЕ ЗАДАН — добавьте в .env'}`);
+    console.log(`   BOT_TOKEN: ${process.env.BOT_TOKEN ? '✅ задан' : '❌ НЕ ЗАДАН'}`);
   });
 }).catch(err => {
   console.error('❌ DB init failed:', err);
