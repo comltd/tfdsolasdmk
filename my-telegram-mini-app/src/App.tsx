@@ -103,7 +103,7 @@ function AuthScreen({ onAuth }: { onAuth: (initData: string, user: any) => void 
     }
   }, []);
 
-  const handleAuth = async (initData: string, tgUser?: any) => {
+  const handleAuth = async (initData: string, _tgUser?: any) => {
     setStatus('loading');
     setErrorMsg('');
     try {
