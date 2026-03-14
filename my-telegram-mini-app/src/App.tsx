@@ -92,16 +92,26 @@ function AuthScreen({ onAuth }: { onAuth: (initData: string, user: any) => void 
   const btnRipple = useRipple();
 
   useEffect(() => {
-    setTimeout(() => setMounted(true), 80);
+  setTimeout(() => setMounted(true), 80);
 
-    // Если уже открыто в Telegram — авторизуем автоматически
+  // Ждём пока Telegram SDK инициализируется
+  const tryAuth = () => {
     const tg = window.Telegram?.WebApp;
     if (tg?.initData) {
       tg.ready();
       tg.expand();
-      handleAuth(tg.initData, tg.initDataUnsafe?.user);
+      handleAuth(tg.initData);
+    } else if (tg && !tg.initData) {
+      // SDK загружен но initData пустой — не в Telegram
+      console.log('No initData — not in Telegram');
+    } else {
+      // SDK ещё не загружен — ждём
+      setTimeout(tryAuth, 100);
     }
-  }, []);
+  };
+
+  tryAuth();
+}, []);
 
   const handleAuth = async (initData: string, _tgUser?: any) => {
     setStatus('loading');
