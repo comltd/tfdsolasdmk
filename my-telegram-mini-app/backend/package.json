@@ -1,11 +1,14 @@
 {
   "name": "telegram-mini-app-backend",
   "version": "1.0.0",
+  "description": "Backend for Telegram Mini App — ОСИ Костанай",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "start": "node src/index.js & node src/bot.js",
+    "dev": "node --watch src/index.js & node --watch src/bot.js",
+    "server": "node src/index.js",
+    "bot": "node src/bot.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
